@@ -47,7 +47,7 @@ class InternalError extends AppError {
             message,
             "An unexpected error occurred. Please try again later.",
         );
-        console.error("Internal Error:", message, originalError);
+        console.error("Internal Error:", originalError);
     }
 }
 

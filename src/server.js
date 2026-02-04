@@ -12,7 +12,7 @@ const setupAndStartServer = () => {
 
     app.use('/api', apiRoutes);
 
-    app.listen(() => {
+    app.listen(PORT, () => {
         if (DB_SYNC) {
             db.sequelize.sync({alter: true});
         }
