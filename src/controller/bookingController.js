@@ -1,9 +1,29 @@
 const { StatusCodes } = require("http-status-codes");
 const { BookingService } = require("../services/index.js");
+const { createChannel, publishMessage } = require("../utils/messageQueue.js");
+const { REMINDER_BINDING_KEY } = require("../config/serverConfig.js");
 
 const bookingService = new BookingService()
 
-const create = async (req, res) => {
+class BookingController {
+
+    async sendMessageToQueue(req, res) {
+        try {
+            const channel = await createChannel();
+            const data = {message: "Success"};
+            publishMessage(channel, REMINDER_BINDING_KEY, JSON.stringify(data));
+            return res.status(200).json({
+                message: "Successfully Published the Enent"
+            })
+        } catch (error) {
+            return res.status(500).json({
+                err: error,
+                message: "Internal Server Error"
+            })
+        }
+    }
+
+    async create(req, res) {
     try {
         const body = req.body;
         const result = await bookingService.createBooking(body);
@@ -16,7 +36,6 @@ const create = async (req, res) => {
         res.status(error.statusCode).json(error);
     }
 }
-
-module.exports = {
-    create
 }
+
+module.exports = BookingController;
